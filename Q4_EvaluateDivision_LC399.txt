@@ -1,0 +1,48 @@
+class Pair{
+    String node;
+    double val;
+    Pair(String s,double v){
+        node=s;
+        val=v;
+    }
+}
+class Solution {
+   double[] res;
+   List<Pair> temp=new ArrayList<>();
+   void find(Map<String,List<Pair>> map,String cur,double val,String dest,int idx,Set<String> vis){
+        if(vis.contains(cur))return;
+        if(cur.equals(dest)&&map.containsKey(cur)){
+            res[idx]=val;
+            return;
+        }
+        vis.add(cur);
+        for(Pair nxt:map.getOrDefault(cur,temp)){
+            find(map,nxt.node,val*nxt.val,dest,idx,vis);
+        }
+        vis.remove(cur);
+    }
+    public double[] calcEquation(List<List<String>> eq, double[] values, List<List<String>> q) {
+        Map<String,List<Pair>> map= new HashMap<>();
+        for(int i=0;i<values.length;i++){
+            String x=eq.get(i).get(0);
+            String y=eq.get(i).get(1);
+            double w=values[i];
+            map.computeIfAbsent(x,k->new ArrayList<>());
+            map.computeIfAbsent(y,k->new ArrayList<>());
+            map.get(x).add(new Pair(y,w));
+            map.get(y).add(new Pair(x,1/w));
+        }
+        int m=q.size();
+        res=new double[m];
+        Arrays.fill(res,-1);
+        Set<String> vis=new HashSet<>();
+        int idx=0;
+        for(int i=0;i<m;i++){
+            String x=q.get(i).get(0);
+            String y=q.get(i).get(1);
+            find(map,x,1.0,y,idx,vis);
+            idx++;
+        }
+        return res;
+    }
+}

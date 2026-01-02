@@ -1,0 +1,33 @@
+class Solution {
+    void find(String x,Set<String> set){
+      int st=-1;
+      int end=-1;
+      for(int i=0;i<x.length();i++){
+        char cur=x.charAt(i);
+        if(cur=='}'){
+          end=i;
+          break;
+        }else if(cur=='{')st=i;
+      }
+      if(end==-1){
+        set.add(x);
+        return;	
+      }
+      String pref=x.substring(0,st);
+      String suf=x.substring(end+1,x.length());
+      String[] all=x.substring(st+1,end).split(",");
+      for(String mid:all){
+        StringBuilder str=new StringBuilder(pref);
+        str.append(mid);
+        str.append(suf);
+        find(str.toString(),set);
+      }
+    }
+    public List<String> braceExpansionII(String expression) {
+        List<String> res=new ArrayList<>();
+        Set<String> set=new TreeSet<>();
+        find(expression,set);
+        res.addAll(set);
+	      return res;
+    }
+}
